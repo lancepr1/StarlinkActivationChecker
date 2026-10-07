@@ -1,4 +1,6 @@
 node_modules
 proxies.txt
+.env
+.env.*
 .DS_Store
 *.log

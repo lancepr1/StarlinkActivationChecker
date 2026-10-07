@@ -9,6 +9,7 @@ import { defaultProxyPool } from "./lib/proxyPool.js";
 const root = fileURLToPath(new URL(".", import.meta.url));
 const publicDir = join(root, "public");
 const port = Number(process.env.PORT) || 8787;
+const host = process.env.HOST || "0.0.0.0";
 
 const types = {
   ".html": "text/html; charset=utf-8",
@@ -77,6 +78,11 @@ async function serveStatic(response, pathname) {
 const server = createServer(async (request, response) => {
   const url = new URL(request.url ?? "/", `http://${request.headers.host ?? "localhost"}`);
 
+  if (request.method === "GET" && (url.pathname === "/health" || url.pathname === "/healthz")) {
+    send(response, 200, JSON.stringify({ status: "ok" }));
+    return;
+  }
+
   if (request.method === "GET" && url.pathname === "/api/proxies") {
     send(response, 200, JSON.stringify(defaultProxyPool.health()));
     return;
@@ -124,10 +130,19 @@ const server = createServer(async (request, response) => {
   send(response, 404, JSON.stringify({ status: "error", detail: "Not found" }));
 });
 
-server.listen(port, "127.0.0.1", () => {
+server.listen(port, host, () => {
   const health = defaultProxyPool.health();
   const proxyMsg = health.enabled
     ? `${health.configured} proxies loaded (${health.strategy})`
     : "direct connection (no proxies)";
-  console.log(`Activation check running at http://127.0.0.1:${port} [${proxyMsg}]`);
+  console.log(`Activation check running at http://${host}:${port} [${proxyMsg}]`);
 });
+
+const shutdown = () => {
+  defaultProxyPool.close();
+  server.close(() => {
+    process.exit(0);
+  });
+};
+process.on("SIGTERM", shutdown);
+process.on("SIGINT", shutdown);

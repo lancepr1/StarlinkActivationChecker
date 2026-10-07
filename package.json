@@ -8,5 +8,8 @@
   },
   "dependencies": {
     "undici": "^6.29.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   }
 }
