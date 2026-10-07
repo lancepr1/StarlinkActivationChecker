@@ -4,6 +4,7 @@ import { extname, join, normalize } from "node:path";
 import { fileURLToPath } from "node:url";
 import { isValidIdentifier } from "./lib/identifiers.js";
 import { checkIdentifier } from "./lib/starlink.js";
+import { defaultProxyPool } from "./lib/proxyPool.js";
 
 const root = fileURLToPath(new URL(".", import.meta.url));
 const publicDir = join(root, "public");
@@ -76,6 +77,17 @@ async function serveStatic(response, pathname) {
 const server = createServer(async (request, response) => {
   const url = new URL(request.url ?? "/", `http://${request.headers.host ?? "localhost"}`);
 
+  if (request.method === "GET" && url.pathname === "/api/proxies") {
+    send(response, 200, JSON.stringify(defaultProxyPool.health()));
+    return;
+  }
+
+  if (request.method === "POST" && url.pathname === "/api/proxies/reload") {
+    const health = defaultProxyPool.reload();
+    send(response, 200, JSON.stringify({ message: "Proxies reloaded", health }));
+    return;
+  }
+
   if (request.method === "GET") {
     await serveStatic(response, url.pathname);
     return;
@@ -113,5 +125,9 @@ const server = createServer(async (request, response) => {
 });
 
 server.listen(port, "127.0.0.1", () => {
-  console.log(`Activation check running at http://127.0.0.1:${port}`);
+  const health = defaultProxyPool.health();
+  const proxyMsg = health.enabled
+    ? `${health.configured} proxies loaded (${health.strategy})`
+    : "direct connection (no proxies)";
+  console.log(`Activation check running at http://127.0.0.1:${port} [${proxyMsg}]`);
 });

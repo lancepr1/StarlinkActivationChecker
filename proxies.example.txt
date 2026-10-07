@@ -1,0 +1,18 @@
+# Starlink Activation Check - Proxy List Example
+# Supports HTTP and HTTPS proxies.
+# One proxy per line. Lines starting with # are ignored.
+#
+# Supported formats:
+# 1. Standard URL:
+#    http://proxy1.example.com:8080
+#    http://username:password@proxy2.example.com:8080
+#    https://secure-proxy.example.com:8443
+#
+# 2. Host and Port (protocol defaults to http):
+#    198.51.100.1:8080
+#
+# 3. Provider export format (host:port:user:pass):
+#    198.51.100.2:8080:myuser:mypassword
+#
+# 4. user:pass@host:port:
+#    myuser:mypassword@198.51.100.3:8080

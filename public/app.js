@@ -217,6 +217,7 @@ async function runChecks() {
   if (token !== runToken) return;
   progressLabel.textContent = `Checked ${finished} of ${total}`;
   setBusy(false);
+  refreshProxyStatus();
 }
 
 checkButton.addEventListener("click", () => {
@@ -268,4 +269,34 @@ exportButton.addEventListener("click", () => {
   URL.revokeObjectURL(link.href);
 });
 
+const proxyPill = document.querySelector("#proxy-pill");
+
+async function refreshProxyStatus() {
+  if (!proxyPill) return;
+  try {
+    const res = await fetch("/api/proxies");
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data.enabled) {
+      const cooling = data.coolingDownCount || 0;
+      if (cooling > 0) {
+        proxyPill.className = "proxy-pill warning";
+        proxyPill.title = `${data.active} of ${data.configured} proxies healthy (${cooling} cooling down)`;
+        proxyPill.innerHTML = `<span class="dot"></span> ${data.active}/${data.configured} Proxies`;
+      } else {
+        proxyPill.className = "proxy-pill active";
+        proxyPill.title = `${data.configured} rotating proxies active (${data.strategy})`;
+        proxyPill.innerHTML = `<span class="dot"></span> ${data.configured} Proxies`;
+      }
+    } else {
+      proxyPill.className = "proxy-pill direct";
+      proxyPill.title = "No proxies configured (direct connection). Add proxies to proxies.txt or PROXY_LIST env var.";
+      proxyPill.innerHTML = `<span class="dot"></span> Direct Connection`;
+    }
+  } catch {
+    // Keep quiet on connection issues
+  }
+}
+
 refreshParseSummary();
+refreshProxyStatus();

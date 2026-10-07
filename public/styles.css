@@ -30,9 +30,55 @@ button, textarea { font: inherit; }
 .topbar {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   gap: 16px;
   padding: 22px 28px 8px;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.proxy-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--muted);
+  cursor: default;
+  user-select: none;
+}
+
+.proxy-pill .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: currentColor;
+}
+
+.proxy-pill.active {
+  border-color: rgba(61, 214, 140, 0.35);
+  color: #3dd68c;
+  background: rgba(61, 214, 140, 0.08);
+}
+
+.proxy-pill.warning {
+  border-color: rgba(245, 193, 108, 0.35);
+  color: #f5c16c;
+  background: rgba(245, 193, 108, 0.08);
+}
+
+.proxy-pill.direct {
+  border-color: var(--line);
+  color: var(--muted);
 }
 
 .brand {
