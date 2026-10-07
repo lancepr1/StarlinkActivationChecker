@@ -1,7 +1,7 @@
 import { identifierKind, isValidIdentifier, parseIdentifiers } from "/identifiers.js";
 
 const MAX_CHECKS = 2500;
-const CONCURRENCY = 5;
+const CONCURRENCY = 15;
 const DELAY_MS = 600;
 
 const input = document.querySelector("#identifiers");
