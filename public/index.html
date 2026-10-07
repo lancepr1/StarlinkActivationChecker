@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Starlink Activation Check</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">Starlink</div>
+      <p class="topbar-note">Bulk check against <a href="https://starlink.com/activate" target="_blank" rel="noreferrer">starlink.com/activate</a></p>
+    </header>
+
+    <main class="layout">
+      <section class="panel entry">
+        <h1>Activation check</h1>
+        <p class="lede">Paste kit IDs, IMEIs, or terminal IDs. Each one is looked up the same way the activation page does.</p>
+        <label class="field-label" for="identifiers">Identifiers</label>
+        <textarea id="identifiers" spellcheck="false" placeholder="One identifier per line, or separated by commas&#10;&#10;KIT4M001234567&#10;123456789012345&#10;ut12345678-90abcdef-12345678"></textarea>
+        <div class="entry-meta">
+          <span id="parse-summary">Nothing pasted yet</span>
+          <span id="limit-note" hidden></span>
+        </div>
+        <div class="actions">
+          <button id="check" type="button">Check activation</button>
+          <button id="stop" type="button" class="ghost" hidden>Stop</button>
+          <button id="clear" type="button" class="ghost">Clear</button>
+        </div>
+        <dl class="legend">
+          <div><dt>Available</dt><dd>Not assigned. The activation page would continue.</dd></div>
+          <div><dt>Already activated</dt><dd>Assigned to an account. The activation page would stop.</dd></div>
+          <div><dt>Not recognized</dt><dd>Starlink rejected the identifier.</dd></div>
+        </dl>
+      </section>
+
+      <section class="panel results">
+        <div class="results-head">
+          <h2>Results</h2>
+          <button id="export" type="button" class="ghost" disabled>Export CSV</button>
+        </div>
+        <div id="stats" class="stats" hidden></div>
+        <div id="progress" class="progress" hidden>
+          <div id="progress-bar"></div>
+        </div>
+        <p id="progress-label" class="progress-label" hidden></p>
+        <div id="empty" class="empty">Paste a list and run a check. Results show up here.</div>
+        <div class="table-wrap">
+          <table id="table" hidden>
+            <thead>
+              <tr>
+                <th>Identifier</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Kit</th>
+                <th>Detail</th>
+              </tr>
+            </thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>
